@@ -1,0 +1,251 @@
+A quiz application built using HTML, CSS, and JavaScript is a dynamic web-based platform that allows users to participate in interactive quizzes. Below is a brief outline of its components and functionalities:
+
+Components
+HTML (Structure):
+
+Defines the structure of the application, such as quiz containers, questions, answer options, and navigation buttons.
+Includes input elements like radio buttons or checkboxes for user answers.
+CSS (Styling):
+
+Adds visual appeal with colors, fonts, animations, and responsive design.
+Enhances user experience by styling the quiz interface, such as question layout, progress indicators, and buttons.
+JavaScript (Functionality):
+
+Handles the application logic, such as loading questions, validating answers, tracking scores, and displaying results.
+Provides interactivity, like timers, score animations, and navigation between questions.
+
+
+
+
+
+## HTML ##
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz App - Easy Tutorials</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+    <h1>Simple Quiz</h1>
+    <div class="quiz">
+    <h2 id="question">Question goes here</h2>
+    <div id="answer-buttons">
+    <!--<button class="btn">Answer 1</button>
+    <button class="btn">Answer 2</button>
+    <button class="btn">Answer 3</button>
+    <button class="btn">Answer 4</button>-->
+    </div>
+    <button id="next-btn">Next</button>
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
+
+
+## JAVASCRIPT ##
+
+
+const questions = [
+    {
+        question: "What color is the sun?",
+        answers: [
+            { text: "yellow", correct: true },
+            { text: "pink", correct: false },
+            { text: "green", correct: false },
+            { text: "blue", correct: false },
+        ]
+    },
+    {
+        question: " Where is the Gateway of India located?",
+        answers: [
+            { text: "Delhi", correct: false },
+            { text: "Kolkata", correct: false },
+            { text: "Hydrabad", correct: false },
+            { text: "Mumbai", correct: true },
+        ]
+    },
+    {
+        question: " What month comes after May? ",
+        answers: [
+            { text: "May", correct: false },
+            { text: "october", correct: false },
+            { text: "june", correct: true },
+            { text: "july", correct: false },
+        ]
+    },
+    {
+        question: " What is the national tree of India?",
+        answers: [
+            { text: "banana", correct: false },
+            { text: "orange", correct: false },
+            { text: "pineapple", correct: false },
+            { text: "cucumerber", correct: true },
+        ]
+    }
+];
+const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next";
+    showQuestion();
+}
+function showQuestion() {
+    resetstate();
+    let currentQuestion = questions[currentQuestionIndex];
+    let questionNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = questionNo + "." + currentQuestion.
+        question;
+
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerHTML = answer.text;
+        button.classList.add("btn");
+        answerButtons.appendChild(button);
+        if (answer.correct) {
+            button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer)
+    });
+}
+function resetstate() {
+    nextButton.style.display = "none";
+    while (answerButtons.firstchild){
+        answerButtons.removeChild(answerButtons.firstchild);
+    }
+}
+function selectAnswer(e) {
+    const selectedBtn = e.target;
+    const iscorrect = selectedBtn.dataset.correct === "true";
+    if (iscorrect) {
+        selectedBtn.classList.add("correct");
+        score++;
+    } else {
+        selectedBtn.classList.add("incorrect");
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if (button.dataset.correct === "true") {
+            button.classList.add("correct");
+        }
+        button.disabled = true;
+    });
+    nextButton.style.display = "block";
+}
+function showscore(){
+    resetstate();
+    questionElement.innerHTML=`you scored ${score} out of ${questions.length}!`;
+    nextButton.innerHTML ="play again";
+    nextButton.style.display = "block";
+}
+function handleNextButton(){
+    currentQuestionIndex++;
+    if(currentQuestionIndex < questions.length){
+        showQuestion();
+    }else{
+        showscore();
+    }
+}
+nextButton.addEventListener("click",()=>{
+    if(currentQuestionIndex < questions.length){
+        handleNextButton();
+    }else{
+        startQuiz();
+    }
+});
+startQuiz();
+
+
+## CSS ##
+
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background: #001e4d;
+}
+
+.app {
+    background: #fff;
+    width: 90%;
+    max-width: 600px;
+    margin: 100px auto 0;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+.app h1 {
+    font-weight: 25px;
+    color: #001e4d;
+    font-weight: 600;
+    border-bottom: 1px solid #333;
+    padding-bottom: 30px;
+}
+
+.quiz {
+    padding: 20px 0;
+}
+
+.quiz h2 {
+    font-size: 18px;
+    color: #001e4d;
+    font-weight: 600;
+}
+
+.btn {
+    background: #fff;
+    color: #222;
+    font-weight: 500;
+    width: 100%;
+    border: 1px solid #222;
+    padding: 10px;
+    margin: 10px 0;
+    text-align: left;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn:hover:not([disabled]) {
+    background: #222;
+    color: #fff;
+}
+.btn:disabled{
+    cursor: no-drop;
+}
+
+#next-btn {
+    background: #001e4d;
+    color: #fff;
+    font-weight: 500;
+    width: 150px;
+    border: 0;
+    padding: 10px;
+    margin: 20px auto 0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: none;
+}
+.correct{
+    background: #9aeabc;
+}
+.incorrect{
+    background: #ff9393;
+}
+
+
+
